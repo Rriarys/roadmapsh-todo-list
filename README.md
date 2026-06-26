@@ -1,6 +1,6 @@
 # Todo List API
 
-A small educational project based on [roadmap.sh/projects/todo-list-api](https://roadmap.sh/projects/todo-list-api).
+A small educational project based on [roadmap.sh/projects/todo-list-api](https://roadmap.sh/projects/todo-list-api)
 
 ## Tech Stack
 
