@@ -1,6 +1,20 @@
 @ToDoList.Api_HostAddress = http://localhost:5226
 
-GET {{ToDoList.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNmQ2ZmVhYS1jOWU3LTRiNmYtYWM4ZC00NjU0ZDE1M2QwYWIiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJleHAiOjE3ODM0MzEzMTYsImlzcyI6IlRvZG9MaXN0QXBpIiwiYXVkIjoiVG9kb0xpc3RVc2VycyJ9.NdOVkOTnVbLUfaNFVf4f2UA5k66q63VaLGT8_h2Vo3o
 
-###
+### 1. Generate a token for testing (simulate authentication)
+# Copy the token value from the response (field "token")
+POST {{ToDoList.Api_HostAddress}}/api/test/simulate-auth
+
+### 2. Request to a protected method (with token)
+# Replace <TOKEN> with the obtained value
+GET {{ToDoList.Api_HostAddress}}/api/test/protected
+Authorization: Bearer {{Token}}
+
+### 3. Request to a protected method (without token)
+# Expected 401 Unauthorized
+GET {{ToDoList.Api_HostAddress}}/api/test/protected
+
+### 4. Request to a public method
+# Expected 200 OK
+GET {{ToDoList.Api_HostAddress}}/api/test/unauthorized
