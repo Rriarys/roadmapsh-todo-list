@@ -11,7 +11,7 @@ using ToDoList.Api.Data;
 namespace ToDoList.Api.Data.Migrations
 {
     [DbContext(typeof(ToDoListDbContext))]
-    [Migration("20260707104038_InitialCreate")]
+    [Migration("20260707111905_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -63,6 +63,7 @@ namespace ToDoList.Api.Data.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
+                        .HasMaxLength(512)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

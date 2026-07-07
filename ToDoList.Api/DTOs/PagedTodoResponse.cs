@@ -4,4 +4,5 @@ public record PagedTodoResponse(
     IReadOnlyCollection<TodoItemResponse> Items,
     int TotalCount,
     int Page,
-    int PageSize);
+    int PageSize
+    );
