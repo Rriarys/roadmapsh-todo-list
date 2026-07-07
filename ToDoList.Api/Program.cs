@@ -2,6 +2,7 @@ using BloggingPlatform.API.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using ToDoList.Api.Data;
 using ToDoList.Api.Data.DataExtensions;
+using ToDoList.Api.Options;
 using ToDoList.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,9 @@ if (string.IsNullOrWhiteSpace(SQLiteConnectionString))
 }
 builder.Services.AddDbContext<ToDoListDbContext>(options =>
     options.UseSqlite(SQLiteConnectionString));
+
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 
