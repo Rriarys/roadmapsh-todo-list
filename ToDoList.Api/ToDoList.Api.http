@@ -24,41 +24,41 @@ GET {{ToDoList.Api_HostAddress}}/api/test/unauthorized
 ### Authentication and Authorization Test Cases
 
 ### 5. Register a new user
-POST {{ToDoList.Api_HostAddress}}/api/register
+POST {{ToDoList.Api_HostAddress}}/register
 Content-Type: application/json
 
 {
-  "name": "Tester",
-  "email": "tester@example.com",
+  "name": "Tester2",
+  "email": "tester2@example.com",
   "password": "Password123"
 }
 
 ### 6. Register a user with an existing email (should fail)
 # Expected 409 Conflict
-POST {{ToDoList.Api_HostAddress}}/api/register
+POST {{ToDoList.Api_HostAddress}}/register
 Content-Type: application/json
 
 {
   "name": "OtherUser",
-  "email": "tester@example.com",
+  "email": "tester2@example.com",
   "password": "Password123"
 }
 
 ### 7. Login with valid credentials
-POST {{ToDoList.Api_HostAddress}}/api/login
+POST {{ToDoList.Api_HostAddress}}/login
 Content-Type: application/json
 
 {
-  "email": "tester@example.com",
+  "email": "tester2@example.com",
   "password": "Password123"
 }
 
 ### 8. Login with invalid password (should fail)
 # Expected 401 Unauthorized
-POST {{ToDoList.Api_HostAddress}}/api/login
+POST {{ToDoList.Api_HostAddress}}/login
 Content-Type: application/json
 
 {
-  "email": "tester@example.com",
+  "email": "tester2@example.com",
   "password": "WrongPassword"
 }

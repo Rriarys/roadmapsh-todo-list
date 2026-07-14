@@ -7,7 +7,7 @@ namespace ToDoList.Api.Controllers;
 [ApiController]
 public class AuthController(IAuthService authService) : ControllerBase
 {
-    [HttpPost("api/register")]
+    [HttpPost("/register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
         try
@@ -21,7 +21,7 @@ public class AuthController(IAuthService authService) : ControllerBase
         }
     }
 
-    [HttpPost("api/login")]
+    [HttpPost("/login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
         try
