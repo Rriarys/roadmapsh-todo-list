@@ -6,7 +6,7 @@ using ToDoList.Api.Models;
 using ToDoList.Api.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ToDoList.Api.Services;
+namespace ToDoList.Api.Services.Token;
 
 public class TokenService(IOptions<JwtOptions> options) : ITokenService
 {

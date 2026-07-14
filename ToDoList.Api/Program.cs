@@ -6,7 +6,10 @@ using System.Text;
 using ToDoList.Api.Data;
 using ToDoList.Api.Data.DataExtensions;
 using ToDoList.Api.Options;
-using ToDoList.Api.Services;
+using ToDoList.Api.Services.Auth;
+using ToDoList.Api.Services.PassHash;
+using ToDoList.Api.Services.Token;
+using ToDoList.Api.Services.ToDo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +53,8 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddScoped<ITodoService, TodoService>();
 
 var app = builder.Build();
 

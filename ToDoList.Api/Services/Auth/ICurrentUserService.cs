@@ -1,4 +1,4 @@
-﻿namespace ToDoList.Api.Services;
+﻿namespace ToDoList.Api.Services.Auth;
 
 public interface ICurrentUserService
 {

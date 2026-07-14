@@ -1,18 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ToDoList.Api.DTOs;
-using ToDoList.Api.Services;
+using ToDoList.Api.Services.Auth;
 
 namespace ToDoList.Api.Controllers;
 
 [ApiController]
-public class AuthController(IAuthService authService) : ControllerBase
+public class AuthController(
+    IAuthService authService,
+    CancellationToken ct) : ControllerBase
 {
     [HttpPost("/register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
         try
         {
-            var response = await authService.RegisterAsync(request);
+            var response = await authService.RegisterAsync(request, ct);
             return Ok(response);
         }
         catch (InvalidOperationException ex)
@@ -26,7 +28,7 @@ public class AuthController(IAuthService authService) : ControllerBase
     {
         try
         {
-            var response = await authService.LoginAsync(request);
+            var response = await authService.LoginAsync(request, ct);
             return Ok(response);
         }
         catch (UnauthorizedAccessException ex)

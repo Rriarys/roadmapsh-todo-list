@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using ToDoList.Api.Models;
 
-namespace ToDoList.Api.Services;
+namespace ToDoList.Api.Services.PassHash;
 
 public class PasswordService : IPasswordService
 {

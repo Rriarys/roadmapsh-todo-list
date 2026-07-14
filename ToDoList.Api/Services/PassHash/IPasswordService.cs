@@ -1,4 +1,4 @@
-﻿namespace ToDoList.Api.Services;
+﻿namespace ToDoList.Api.Services.PassHash;
 
 public interface IPasswordService
 {

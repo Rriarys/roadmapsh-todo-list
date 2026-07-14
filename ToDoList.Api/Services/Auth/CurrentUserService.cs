@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace ToDoList.Api.Services;
+namespace ToDoList.Api.Services.Auth;
 
 public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
 {

@@ -2,8 +2,10 @@
 using ToDoList.Api.DTOs;
 using ToDoList.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using ToDoList.Api.Services.PassHash;
+using ToDoList.Api.Services.Token;
 
-namespace ToDoList.Api.Services;
+namespace ToDoList.Api.Services.Auth;
 
 public class AuthService(
     ToDoListDbContext toDoListDbContext,
@@ -11,9 +13,9 @@ public class AuthService(
     ITokenService tokenService) : IAuthService
 {
     /// <inheritdoc />
-    public async Task<AuthTokenResponse> RegisterAsync(RegisterRequest request)
+    public async Task<AuthTokenResponse> RegisterAsync(RegisterRequest request, CancellationToken ct)
     {
-        if (await toDoListDbContext.Users.AnyAsync(user => user.Email == request.Email))
+        if (await toDoListDbContext.Users.AnyAsync(user => user.Email == request.Email, ct))
         {
             throw new InvalidOperationException("Email already in use.");
         }
@@ -27,16 +29,18 @@ public class AuthService(
         };
 
         toDoListDbContext.Users.Add(newUser);
-        await toDoListDbContext.SaveChangesAsync();
+
+        // rollback if the user drop the connection before the save changes
+        await toDoListDbContext.SaveChangesAsync(ct);
 
         return new AuthTokenResponse(tokenService.GenerateToken(newUser));
     }
 
     /// <inheritdoc />
-    public async Task<AuthTokenResponse> LoginAsync(LoginRequest request)
+    public async Task<AuthTokenResponse> LoginAsync(LoginRequest request, CancellationToken ct)
     {
         var existingUser = await toDoListDbContext.Users
-                    .FirstOrDefaultAsync(user => user.Email == request.Email);
+                    .FirstOrDefaultAsync(user => user.Email == request.Email, ct);
 
         if (existingUser == null || !passwordService.VerifyPassword(request.Password, existingUser.PasswordHash))
         {
