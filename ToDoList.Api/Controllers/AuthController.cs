@@ -5,12 +5,20 @@ using ToDoList.Api.Services.Auth;
 namespace ToDoList.Api.Controllers;
 
 [ApiController]
-public class AuthController(
-    IAuthService authService,
-    CancellationToken ct) : ControllerBase
+[Route("api/auth")]
+public class AuthController(IAuthService authService) : ControllerBase
 {
-    [HttpPost("/register")]
-    public async Task<IActionResult> Register(RegisterRequest request)
+    /// <summary>
+    /// POST /api/auth/register
+    /// Registers a new user and returns an authentication token on success.
+    /// </summary>
+    /// <param name="request">The registration details payload.</param>
+    /// <param name="ct">The cancellation token for the request.</param>
+    [HttpPost("register")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthTokenResponse))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken ct)
     {
         try
         {
@@ -19,12 +27,21 @@ public class AuthController(
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(ex.Message); // 409
+            return Conflict(new { message = ex.Message }); // 409
         }
     }
 
-    [HttpPost("/login")]
-    public async Task<IActionResult> Login(LoginRequest request)
+    /// <summary>
+    /// POST /api/auth/login
+    /// Authenticates a user and returns an authentication token on success.
+    /// </summary>
+    /// <param name="request">The login credentials payload.</param>
+    /// <param name="ct">The cancellation token for the request.</param>
+    [HttpPost("login")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthTokenResponse))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken ct)
     {
         try
         {
@@ -33,7 +50,7 @@ public class AuthController(
         }
         catch (UnauthorizedAccessException ex)
         {
-            return Unauthorized(ex.Message); // 401
+            return Unauthorized(new { message = ex.Message }); // 401
         }
     }
 }

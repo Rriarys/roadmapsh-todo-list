@@ -1,6 +1,8 @@
 @ToDoList.Api_HostAddress = http://localhost:5226
 
-@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZjMyN2FiMC1iYWYwLTQwN2QtYjZhOS03YjdkZTEzYmIyMTEiLCJlbWFpbCI6InRlc3RlcjNAZXhhbXBsZS5jb20iLCJleHAiOjE3ODQwMjM3MjksImlzcyI6IlRvZG9MaXN0QXBpIiwiYXVkIjoiVG9kb0xpc3RVc2VycyJ9.aGzrtBp7YYcUUei5iIaZBcizzQCxXXregjMsEkCq7SE
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlNzE5Nzk5NS1lODViLTRhMGMtOTZmNS1hOThhNWYwYmM2M2MiLCJlbWFpbCI6InRlc3RlcjRAZXhhbXBsZS5jb20iLCJleHAiOjE3ODQwMzE1NTAsImlzcyI6IlRvZG9MaXN0QXBpIiwiYXVkIjoiVG9kb0xpc3RVc2VycyJ9.WaZESBG-tJ_NFXZhiaBXZ_G-eA349Zs1jCAlVFYWanE
+
+@CreatedTodoId = CB483E04-2702-44F3-AB7F-27E0170338E0
 
 ### JWT token authentication and authorization test cases
 
@@ -24,45 +26,132 @@ GET {{ToDoList.Api_HostAddress}}/api/test/unauthorized
 ### Authentication and Authorization Test Cases
 
 ### 5. Register a new user
-POST {{ToDoList.Api_HostAddress}}/register
+POST {{ToDoList.Api_HostAddress}}/api/auth/register
 Content-Type: application/json
 
 {
-  "name": "Tester3",
-  "email": "tester3@example.com",
+  "name": "Tester4",
+  "email": "tester4@example.com",
   "password": "Password123"
 }
 
 ### 6. Register a user with an existing email (should fail)
 # Expected 409 Conflict
-POST {{ToDoList.Api_HostAddress}}/register
+POST {{ToDoList.Api_HostAddress}}/api/auth/register
 Content-Type: application/json
 
 {
   "name": "OtherUser",
-  "email": "tester3@example.com",
+  "email": "tester4@example.com",
   "password": "Password123"
 }
 
 ### 7. Login with valid credentials
-POST {{ToDoList.Api_HostAddress}}/login
+POST {{ToDoList.Api_HostAddress}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "tester3@example.com",
+  "email": "tester4@example.com",
   "password": "Password123"
 }
 
 ### 8. Login with invalid password (should fail)
 # Expected 401 Unauthorized
-POST {{ToDoList.Api_HostAddress}}/login
+POST {{ToDoList.Api_HostAddress}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "tester3@example.com",
+  "email": "tester4@example.com",
   "password": "WrongPassword"
 }
 
 ### 9. Verify CurrentUserService (Authenticated)
 GET {{ToDoList.Api_HostAddress}}/api/test/whoami
+Authorization: Bearer {{Token}}
+
+### To-Do Items Management Test Cases
+
+### 10. Create a new to-do item (Authenticated)
+# Expected: 201 Created with created item in response body and Location header
+# @name createTodo
+POST {{ToDoList.Api_HostAddress}}/api/todos
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "title": "Finish API Implementation",
+  "description": "Write controller endpoints and manual tests using HTTP file"
+}
+
+### 11. Create a to-do item without authentication (Anonymous)
+# Expected: 401 Unauthorized
+POST {{ToDoList.Api_HostAddress}}/api/todos
+Content-Type: application/json
+
+{
+  "title": "Anonymous Todo",
+  "description": "Should not be created"
+}
+
+### 12. Create a to-do item with invalid payload (Missing title)
+# Expected: 400 Bad Request
+POST {{ToDoList.Api_HostAddress}}/api/todos
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "title": "",
+  "description": "This payload has an empty title"
+}
+
+### 13. Get a single to-do item by ID
+# Expected: 200 OK with the requested item
+GET {{ToDoList.Api_HostAddress}}/api/todos/{{CreatedTodoId}}
+Authorization: Bearer {{Token}}
+
+### 14. Get a non-existent to-do item (or owned by another user)
+# Expected: 404 Not Found
+GET {{ToDoList.Api_HostAddress}}/api/todos/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{Token}}
+
+### 15. Get a paginated list of to-do items
+# Expected: 200 OK with "items", "totalCount", "page", and "pageSize" fields
+GET {{ToDoList.Api_HostAddress}}/api/todos?page=1&pageSize=10
+Authorization: Bearer {{Token}}
+
+### 16. Update an existing to-do item
+# Expected: 200 OK with the updated item in the response body
+PUT {{ToDoList.Api_HostAddress}}/api/todos/{{CreatedTodoId}}
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "title": "Updated API Implementation Title",
+  "description": "Updated description for the manual tests"
+}
+
+### 17. Update a non-existent to-do item (or owned by another user)
+# Expected: 404 Not Found
+PUT {{ToDoList.Api_HostAddress}}/api/todos/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "title": "Ghost Update",
+  "description": "Should fail because item does not exist"
+}
+
+### 18. Delete an existing to-do item
+# Expected: 204 No Content
+DELETE {{ToDoList.Api_HostAddress}}/api/todos/{{CreatedTodoId}}
+Authorization: Bearer {{Token}}
+
+### 19. Verify the item was deleted (Get by ID again)
+# Expected: 404 Not Found
+GET {{ToDoList.Api_HostAddress}}/api/todos/{{CreatedTodoId}}
+Authorization: Bearer {{Token}}
+
+### 20. Delete a non-existent to-do item (or owned by another user)
+# Expected: 404 Not Found
+DELETE {{ToDoList.Api_HostAddress}}/api/todos/00000000-0000-0000-0000-000000000000
 Authorization: Bearer {{Token}}
