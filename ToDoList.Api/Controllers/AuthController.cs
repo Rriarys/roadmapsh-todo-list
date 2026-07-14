@@ -20,15 +20,8 @@ public class AuthController(IAuthService authService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken ct)
     {
-        try
-        {
-            var response = await authService.RegisterAsync(request, ct);
-            return Ok(response);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return Conflict(new { message = ex.Message }); // 409
-        }
+        var response = await authService.RegisterAsync(request, ct);
+        return Ok(response);
     }
 
     /// <summary>
@@ -43,14 +36,7 @@ public class AuthController(IAuthService authService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken ct)
     {
-        try
-        {
-            var response = await authService.LoginAsync(request, ct);
-            return Ok(response);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Unauthorized(new { message = ex.Message }); // 401
-        }
+        var response = await authService.LoginAsync(request, ct);
+        return Ok(response);
     }
 }

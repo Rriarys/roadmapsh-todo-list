@@ -21,7 +21,6 @@ public class TodosController(ITodoService todoService) : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateTodoRequest request, CancellationToken ct)
     {
         var createdTodo = await todoService.CreateAsync(request, ct);
-
         return CreatedAtAction(nameof(GetById), new { id = createdTodo.Id }, createdTodo); // 201
     }
 
@@ -35,15 +34,8 @@ public class TodosController(ITodoService todoService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken ct)
     {
-        try
-        {
-            var todo = await todoService.GetByIdAsync(id, ct);
-            return Ok(todo); // 200
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(); // 404
-        }
+        var todo = await todoService.GetByIdAsync(id, ct);
+        return Ok(todo); // 200
     }
 
     /// <summary>
@@ -71,15 +63,8 @@ public class TodosController(ITodoService todoService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateTodoRequest request, CancellationToken ct)
     {
-        try
-        {
-            var updatedTodo = await todoService.UpdateAsync(id, request, ct);
-            return Ok(updatedTodo); // 200
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(); // 404
-        }
+        var updatedTodo = await todoService.UpdateAsync(id, request, ct);
+        return Ok(updatedTodo); // 200
     }
 
     /// <summary>
@@ -92,15 +77,7 @@ public class TodosController(ITodoService todoService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken ct)
     {
-        try
-        {
-            await todoService.DeleteAsync(id, ct);
-
-            return NoContent(); // 204
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound(); // 404
-        }
+        await todoService.DeleteAsync(id, ct);
+        return NoContent(); // 204
     }
 }

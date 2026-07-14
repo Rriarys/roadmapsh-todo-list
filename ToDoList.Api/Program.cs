@@ -1,10 +1,10 @@
-using BloggingPlatform.API.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ToDoList.Api.Data;
 using ToDoList.Api.Data.DataExtensions;
+using ToDoList.Api.Middleware;
 using ToDoList.Api.Options;
 using ToDoList.Api.Repositories;
 using ToDoList.Api.Services.Auth;
@@ -14,7 +14,6 @@ using ToDoList.Api.Services.Token;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddControllers();
@@ -64,6 +63,8 @@ if (!app.Environment.IsEnvironment("Testing"))
 {
     app.Services.ApplyMigrations();
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

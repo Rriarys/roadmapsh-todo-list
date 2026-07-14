@@ -58,10 +58,10 @@ public static class DatabaseExtensions
         dbContext.Users.AddRange(users);
 
         var todoItems = new List<TodoItem>();
-
+        var itemsAmount = 23; // Total number of items we want to create
         var random = new Random();
         var itemCounts = new List<int>(Enumerable.Repeat(1, users.Count));
-        var remainingItems = 23 - itemCounts.Count; // 23 is total number of items we want to create
+        var remainingItems = itemsAmount - itemCounts.Count;
 
         for (var i = 0; i < remainingItems; i++)
         {
