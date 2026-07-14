@@ -1,6 +1,6 @@
 @ToDoList.Api_HostAddress = http://localhost:5226
 
-@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzODYwNGI5OS1iYTk0LTQzM2EtODhmYi05ZGIxYzA4MDdlNDMiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJleHAiOjE3ODQwMjE2NDUsImlzcyI6IlRvZG9MaXN0QXBpIiwiYXVkIjoiVG9kb0xpc3RVc2VycyJ9.YH2xQmlI8uRpQxiFfz6BKv59-eG8uZkxkan6ThhHX6c
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZjMyN2FiMC1iYWYwLTQwN2QtYjZhOS03YjdkZTEzYmIyMTEiLCJlbWFpbCI6InRlc3RlcjNAZXhhbXBsZS5jb20iLCJleHAiOjE3ODQwMjM3MjksImlzcyI6IlRvZG9MaXN0QXBpIiwiYXVkIjoiVG9kb0xpc3RVc2VycyJ9.aGzrtBp7YYcUUei5iIaZBcizzQCxXXregjMsEkCq7SE
 
 ### JWT token authentication and authorization test cases
 
@@ -28,8 +28,8 @@ POST {{ToDoList.Api_HostAddress}}/register
 Content-Type: application/json
 
 {
-  "name": "Tester2",
-  "email": "tester2@example.com",
+  "name": "Tester3",
+  "email": "tester3@example.com",
   "password": "Password123"
 }
 
@@ -40,7 +40,7 @@ Content-Type: application/json
 
 {
   "name": "OtherUser",
-  "email": "tester2@example.com",
+  "email": "tester3@example.com",
   "password": "Password123"
 }
 
@@ -49,7 +49,7 @@ POST {{ToDoList.Api_HostAddress}}/login
 Content-Type: application/json
 
 {
-  "email": "tester2@example.com",
+  "email": "tester3@example.com",
   "password": "Password123"
 }
 
@@ -59,6 +59,10 @@ POST {{ToDoList.Api_HostAddress}}/login
 Content-Type: application/json
 
 {
-  "email": "tester2@example.com",
+  "email": "tester3@example.com",
   "password": "WrongPassword"
 }
+
+### 9. Verify CurrentUserService (Authenticated)
+GET {{ToDoList.Api_HostAddress}}/api/test/whoami
+Authorization: Bearer {{Token}}

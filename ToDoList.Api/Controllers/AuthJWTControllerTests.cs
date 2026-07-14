@@ -5,15 +5,17 @@ using ToDoList.Api.Services;
 
 namespace ToDoList.Api.Controllers;
 
-// Only for JWT token generation simulation and testing purposes
+// Only for JWT token generation and current user Id claim
 [ApiController]
 [Route("api/test")]
-public class AuthJWTControllerTests(ITokenService tokenService) : ControllerBase
+public class AuthJWTControllerTests(
+    ITokenService tokenService,
+    ICurrentUserService currentUserService) : ControllerBase
 {
     [HttpPost("simulate-auth")]
     public IActionResult SimulateFlow()
     {
-        // 1. Create a mock user
+        // mock user
         var user = new User
         {
             Id = Guid.NewGuid(),
@@ -21,7 +23,6 @@ public class AuthJWTControllerTests(ITokenService tokenService) : ControllerBase
             Name = "Tester"
         };
 
-        // 2. Generate a token for the mock user
         var token = tokenService.GenerateToken(user);
 
         return Ok(new { Token = token, Message = "Token successfully generated" });
@@ -38,5 +39,21 @@ public class AuthJWTControllerTests(ITokenService tokenService) : ControllerBase
     public IActionResult GetPublicData()
     {
         return Ok("This is a public method, accessible to everyone");
+    }
+
+    // ID
+    [Authorize]
+    [HttpGet("whoami")]
+    public IActionResult GetCurrentUser()
+    {
+        if (!currentUserService.IsAuthenticated)
+        {
+            return Unauthorized("Not authenticated");
+        }
+
+        return Ok(new
+        {
+            UserId = currentUserService.UserId
+        });
     }
 }
