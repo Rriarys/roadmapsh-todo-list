@@ -50,6 +50,9 @@ public class TodoService(
             userId,
             query.Page,
             query.PageSize,
+            query.Title,
+            query.SortBy,
+            query.SortDescending,
             ct);
 
         var projectedItems = items

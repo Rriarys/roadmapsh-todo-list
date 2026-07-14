@@ -1,6 +1,6 @@
 @ToDoList.Api_HostAddress = http://localhost:5226
 
-@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlNzE5Nzk5NS1lODViLTRhMGMtOTZmNS1hOThhNWYwYmM2M2MiLCJlbWFpbCI6InRlc3RlcjRAZXhhbXBsZS5jb20iLCJleHAiOjE3ODQwMzE1NTAsImlzcyI6IlRvZG9MaXN0QXBpIiwiYXVkIjoiVG9kb0xpc3RVc2VycyJ9.WaZESBG-tJ_NFXZhiaBXZ_G-eA349Zs1jCAlVFYWanE
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlNzE5Nzk5NS1lODViLTRhMGMtOTZmNS1hOThhNWYwYmM2M2MiLCJlbWFpbCI6InRlc3RlcjRAZXhhbXBsZS5jb20iLCJleHAiOjE3ODQwMzc1MDAsImlzcyI6IlRvZG9MaXN0QXBpIiwiYXVkIjoiVG9kb0xpc3RVc2VycyJ9.OjIHMTI3xw0IWns1fdrlgTOtZ0qK8v8c8iqBbsM2tW4
 
 @CreatedTodoId = CB483E04-2702-44F3-AB7F-27E0170338E0
 
@@ -79,8 +79,8 @@ Authorization: Bearer {{Token}}
 Content-Type: application/json
 
 {
-  "title": "Finish API Implementation",
-  "description": "Write controller endpoints and manual tests using HTTP file"
+  "title": "Another Test Todo",
+  "description": "Another test description. Big description for testing purposes."
 }
 
 ### 11. Create a to-do item without authentication (Anonymous)
@@ -154,4 +154,26 @@ Authorization: Bearer {{Token}}
 ### 20. Delete a non-existent to-do item (or owned by another user)
 # Expected: 404 Not Found
 DELETE {{ToDoList.Api_HostAddress}}/api/todos/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{Token}}
+
+### To-Do Items Filtering and Sorting Test Cases
+
+### 21. Get list with filtering by title
+# Expected: 200 OK, only items containing "Test" in the title
+GET {{ToDoList.Api_HostAddress}}/api/todos?title=Test&page=1&pageSize=10
+Authorization: Bearer {{Token}}
+
+### 22. Get list with sorting by title (ascending)
+# Expected: 200 OK, items sorted alphabetically by title (A-Z)
+GET {{ToDoList.Api_HostAddress}}/api/todos?sortBy=title&sortDescending=false&page=1&pageSize=10
+Authorization: Bearer {{Token}}
+
+### 23. Get list with sorting by title (descending)
+# Expected: 200 OK, items sorted alphabetically by title (Z-A)
+GET {{ToDoList.Api_HostAddress}}/api/todos?sortBy=title&sortDescending=true&page=1&pageSize=10
+Authorization: Bearer {{Token}}
+
+### 24. Get list with combined filtering and sorting
+# Expected: 200 OK, filtered results ("Test") sorted by title descending
+GET {{ToDoList.Api_HostAddress}}/api/todos?title=Test&sortBy=title&sortDescending=true&page=1&pageSize=10
 Authorization: Bearer {{Token}}

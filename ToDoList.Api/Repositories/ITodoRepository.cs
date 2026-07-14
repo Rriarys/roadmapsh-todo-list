@@ -20,10 +20,19 @@ public interface ITodoRepository
     /// <param name="userId">The ID of the user whose todo items are being retrieved.</param>
     /// <param name="page">The page number to retrieve.</param>
     /// <param name="pageSize">The number of items per page.</param>
+    /// <param name="title">The title to filter the todo items by.</param>
+    /// <param name="sortBy">The field to sort the todo items by.</param>
+    /// <param name="sortDescending">Indicates whether to sort the todo items in descending order.</param>
     /// <param name="ct">A cancellation token.</param>
     /// <returns>A tuple containing the list of todo items and the total count of items.</returns>
     Task<(IReadOnlyCollection<TodoItem> Items, int TotalCount)> GetPagedListAsync(
-        Guid userId, int page, int pageSize, CancellationToken ct);
+        Guid userId, 
+        int page, 
+        int pageSize, 
+        string? title,
+        string? sortBy,
+        bool sortDescending,
+        CancellationToken ct);
 
     /// <summary>
     /// Persists a new todo item to the database.

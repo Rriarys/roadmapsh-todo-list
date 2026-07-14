@@ -42,20 +42,33 @@ public class TodoRepository(ToDoListDbContext dbContext) : ITodoRepository
 
     /// <inheritdoc />
     public async Task<(IReadOnlyCollection<TodoItem> Items, int TotalCount)> GetPagedListAsync(
-        Guid userId, int page, int pageSize, CancellationToken ct)
+        Guid userId, int page, int pageSize, string? title, string? sortBy, bool sortDescending, CancellationToken ct)
     {
-        // Filter elements by the authenticated user's ID with tracking disabled for maximum performance
+        // Start with a base query that filters by userId
         var queryableTodos = dbContext.TodoItems
             .AsNoTracking()
             .Where(t => t.UserId == userId);
 
-        // Apply deterministic ordering for reliable pagination
-        queryableTodos = queryableTodos.OrderBy(t => t.Title).ThenBy(t => t.Id);
+        // Filter by title if provided
+        if (!string.IsNullOrEmpty(title))
+        {
+            queryableTodos = queryableTodos.Where(t => t.Title.Contains(title));
+        }
 
-        // Fetch the total count of user's todo items matching the criteria
+        // Dynamic sorting
+        // Use a switch to allow sorting only by safe fields
+        queryableTodos = sortBy?.ToLower() switch
+        {
+            "id" => sortDescending ? queryableTodos.OrderByDescending(t => t.Id) : queryableTodos.OrderBy(t => t.Id),
+            "title" => sortDescending ? queryableTodos.OrderByDescending(t => t.Title) : queryableTodos.OrderBy(t => t.Title),
+            // By default, sort by Title, then by Id for a deterministic result
+            _ => queryableTodos.OrderBy(t => t.Title).ThenBy(t => t.Id)
+        };
+
+        // Get the total count after filtering
         var totalCount = await queryableTodos.CountAsync(ct);
 
-        // Retrieve only the slice of items required for the requested page
+        // Pagination (after sorting)
         var items = await queryableTodos
             .Skip((page - 1) * pageSize)
             .Take(pageSize)

@@ -22,4 +22,9 @@ public record GetTodosQuery
         get => _pageSize;
         init => _pageSize = value > MaximumPageSize ? MaximumPageSize : value < 1 ? 10 : value; // fallback to 10 if the provided value is less than 1
     }
+
+    public string? Title { get; init; }
+
+    public string? SortBy { get; init; }
+    public bool SortDescending { get; init; } = false;
 }
