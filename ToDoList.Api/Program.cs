@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Threading.RateLimiting;
 using ToDoList.Api.Data;
 using ToDoList.Api.Data.DataExtensions;
 using ToDoList.Api.Middleware;
@@ -28,6 +30,28 @@ builder.Services.AddDbContext<ToDoListDbContext>(options =>
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
 builder.Services.AddScoped<ITokenService, TokenService>();
+
+builder.Services.AddRateLimiter(options =>
+{
+    // Global rate limit: 100 requests per minute for all endpoints
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter("global", _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 100, // 100 requests
+            Window = TimeSpan.FromMinutes(1) // per minute
+        }));
+
+    // Strict policy for Auth
+    options.AddFixedWindowLimiter("auth-policy", opt =>
+    {
+        opt.PermitLimit = 5; // Only 5 attempts
+        opt.Window = TimeSpan.FromMinutes(1); // per minute
+        opt.QueueLimit = 0; // Reject immediately
+    });
+
+    // Handling case when limit is exceeded (429 Too Many Requests)
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -65,6 +89,8 @@ if (!app.Environment.IsEnvironment("Testing"))
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

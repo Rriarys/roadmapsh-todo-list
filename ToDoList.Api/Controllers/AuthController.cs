@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using ToDoList.Api.DTOs;
 using ToDoList.Api.Services.Auth;
 
@@ -6,6 +7,7 @@ namespace ToDoList.Api.Controllers;
 
 [ApiController]
 [Route("api/auth")]
+[EnableRateLimiting("auth-policy")]
 public class AuthController(IAuthService authService) : ControllerBase
 {
     /// <summary>
