@@ -5,9 +5,10 @@ using ToDoList.Api.Services;
 
 namespace ToDoList.Api.Controllers;
 
+// Only for JWT token generation simulation and testing purposes
 [ApiController]
 [Route("api/test")]
-public class AuthControllerTests(ITokenService tokenService) : ControllerBase
+public class AuthJWTControllerTests(ITokenService tokenService) : ControllerBase
 {
     [HttpPost("simulate-auth")]
     public IActionResult SimulateFlow()

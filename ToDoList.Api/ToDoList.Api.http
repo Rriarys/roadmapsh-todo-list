@@ -1,6 +1,8 @@
 @ToDoList.Api_HostAddress = http://localhost:5226
 
-@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjNmQ2ZmVhYS1jOWU3LTRiNmYtYWM4ZC00NjU0ZDE1M2QwYWIiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJleHAiOjE3ODM0MzEzMTYsImlzcyI6IlRvZG9MaXN0QXBpIiwiYXVkIjoiVG9kb0xpc3RVc2VycyJ9.NdOVkOTnVbLUfaNFVf4f2UA5k66q63VaLGT8_h2Vo3o
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzODYwNGI5OS1iYTk0LTQzM2EtODhmYi05ZGIxYzA4MDdlNDMiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJleHAiOjE3ODQwMjE2NDUsImlzcyI6IlRvZG9MaXN0QXBpIiwiYXVkIjoiVG9kb0xpc3RVc2VycyJ9.YH2xQmlI8uRpQxiFfz6BKv59-eG8uZkxkan6ThhHX6c
+
+### JWT token authentication and authorization test cases
 
 ### 1. Generate a token for testing (simulate authentication)
 # Copy the token value from the response (field "token")
@@ -18,3 +20,45 @@ GET {{ToDoList.Api_HostAddress}}/api/test/protected
 ### 4. Request to a public method
 # Expected 200 OK
 GET {{ToDoList.Api_HostAddress}}/api/test/unauthorized
+
+### Authentication and Authorization Test Cases
+
+### 5. Register a new user
+POST {{ToDoList.Api_HostAddress}}/api/register
+Content-Type: application/json
+
+{
+  "name": "Tester",
+  "email": "tester@example.com",
+  "password": "Password123"
+}
+
+### 6. Register a user with an existing email (should fail)
+# Expected 409 Conflict
+POST {{ToDoList.Api_HostAddress}}/api/register
+Content-Type: application/json
+
+{
+  "name": "OtherUser",
+  "email": "tester@example.com",
+  "password": "Password123"
+}
+
+### 7. Login with valid credentials
+POST {{ToDoList.Api_HostAddress}}/api/login
+Content-Type: application/json
+
+{
+  "email": "tester@example.com",
+  "password": "Password123"
+}
+
+### 8. Login with invalid password (should fail)
+# Expected 401 Unauthorized
+POST {{ToDoList.Api_HostAddress}}/api/login
+Content-Type: application/json
+
+{
+  "email": "tester@example.com",
+  "password": "WrongPassword"
+}
