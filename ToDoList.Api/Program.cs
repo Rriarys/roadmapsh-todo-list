@@ -86,11 +86,11 @@ var app = builder.Build();
 if (!app.Environment.IsEnvironment("Testing"))
 {
     app.Services.ApplyMigrations();
+    app.UseRateLimiter();
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
